@@ -84,7 +84,7 @@ public class ExportEncryptedPrivateKeyTool {
 
   public static void main(String[] args) {
     Security.addProvider(new BouncyCastleProvider());
-//    if (args.length == 0 || args[0].equals("--help")) {
+//    if (args.length != 0 && !args[0].equals("--help")) {
 //      printUsage();
 //      return;
 //    }
@@ -151,6 +151,76 @@ public class ExportEncryptedPrivateKeyTool {
       e.printStackTrace();
       System.exit(1);
     }
+//    if (args.length != 0 && !args[0].equals("--help")) {
+//      String keystoreFile = null;
+//      String alias = null;
+//      String encryptionPublicKeyHex = null;
+//      String outputFile = null;
+//      String signingKeyAlias = null;
+//      String signingKeystoreFile = null;
+//      String includeCert = null;
+//      String useRsaAesEncryption = null;
+//      try {
+//        Map<String, String> parsedFlags = Utils.processArgs(args);
+//        keystoreFile = getFlagValue(parsedFlags, "keystore");
+//        alias = getFlagValue(parsedFlags, "alias");
+//        encryptionPublicKeyHex = getFlagValue(parsedFlags, "encryption-key-path");
+//        outputFile = getFlagValue(parsedFlags, "output");
+//
+//        if (parsedFlags.containsKey("signing-key-alias")) {
+//          signingKeyAlias = parsedFlags.remove("signing-key-alias");
+//          signingKeystoreFile = getFlagValue(parsedFlags, "signing-keystore");
+//        } else if (parsedFlags.containsKey("include-cert")) {
+//          includeCert = getFlagValue(parsedFlags, "include-cert");
+//        }
+//        if(parsedFlags.containsKey("rsa-aes-encryption")){
+//          useRsaAesEncryption= getFlagValue(parsedFlags, "rsa-aes-encryption");
+//        }else {
+//          useRsaAesEncryption = "true";
+//        }
+//
+//        if (!parsedFlags.isEmpty()) {
+//          throw new IllegalArgumentException("Unrecognized flags: " + parsedFlags);
+//        }
+//      } catch (Exception e) {
+//        System.err.println("Error: Unable to parse the input: " + Arrays.toString(args));
+//        e.printStackTrace();
+//        printUsage();
+//        System.exit(1);
+//      }
+//
+//      // Run tool
+//      try {
+//        ExportEncryptedPrivateKeyTool tool = new ExportEncryptedPrivateKeyTool(new KeystoreHelper());
+//        KeystoreKey keyToExport =
+//                signingKeystoreFile != null && signingKeyAlias != null
+//                        ? new KeystoreKey(
+//                        Paths.get(keystoreFile),
+//                        alias,
+//                        signingKeystoreFile.toCharArray(),
+//                        signingKeyAlias.toCharArray())
+//                        : new KeystoreKey(Paths.get(keystoreFile), alias);
+//        Optional<KeystoreKey> keyToSignWith =
+//                signingKeystoreFile != null && signingKeyAlias != null
+//                        ? Optional.of(new KeystoreKey(Paths.get(signingKeystoreFile), signingKeyAlias))
+//                        : Optional.empty();
+//        boolean includeCertificate = true;
+//        tool.run(
+//                Boolean.parseBoolean(useRsaAesEncryption),
+//                encryptionPublicKeyHex,
+//                outputFile,
+//                keyToExport,
+//                keyToSignWith,
+//                includeCertificate);
+//      } catch (Exception e) {
+//        System.err.println("Error: Unable to export or encrypt the private key");
+//        e.printStackTrace();
+//        System.exit(1);
+//      }
+//
+//    } else {
+//      printUsage();
+//    }
   }
 
   private static String getFlagValue(Map<String, String> parsedFlags, String flagName) {
@@ -258,7 +328,7 @@ public class ExportEncryptedPrivateKeyTool {
 
     // Encrypt AES key with the encryption public key using RSAES-OAEP.
     PublicKey publicKey = readPublicKey(encryptionPublicKey);
-    Cipher rsaesOaepCipher = Cipher.getInstance("RSA/NONE/OAEPWithSHA1AndMGF1Padding");
+    Cipher rsaesOaepCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
     rsaesOaepCipher.init(Cipher.ENCRYPT_MODE, publicKey);
     byte[] encryptedAesKey = rsaesOaepCipher.doFinal(randomAesKey.getEncoded());
 

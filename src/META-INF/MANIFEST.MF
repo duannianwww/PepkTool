@@ -1,3 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: com.google.wireless.android.vending.developer.signing.tools.extern.export.ExportEncryptedPrivateKeyTool
+Main-Class: com.google.wireless.android.vending.developer.signing.tools.
+ extern.export.ExportEncryptedPrivateKeyTool
 
